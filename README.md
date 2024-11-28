@@ -15,3 +15,17 @@ well its simple, breaking down it into tasks
 > And there is no shortcut to go code for the application / tool itself.
 
 > maybe add a Makefile to deploy a docker container for redis with required port and mount
+
+### USAGE
+
+```bash
+> go run main.go {file_path}
+```
+Example
+```bash
+> go run main.go testfolder 
+testfolder/1.txt    1.txt
+testfolder/2.txt    2.txt
+testfolder/testfolder2/3.txt    3.txt
+testfolder/testfolder2/4.txt    4.txt
+```
