@@ -5,11 +5,19 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+
+	"github.com/redis/go-redis/v9"
 )
 
 var ctx = context.Background()
 
 func main() {
+
+	rdb := redis.NewClient(&redis.Options{
+		Addr:     "localhost:6379",
+		Password: "", // no password set
+		DB:       0,  // use default DB
+	})
 
 	args := os.Args
 
@@ -18,10 +26,12 @@ func main() {
 		return
 	}
 
-	listFilesInDir(args[1])
+	rdb.FlushAll(ctx)
+
+	listFilesInDir(args[1], rdb)
 }
 
-func listFilesInDir(path string) {
+func listFilesInDir(path string, rdb *redis.Client) {
 
 	files, err := os.ReadDir(path)
 
@@ -37,13 +47,17 @@ func listFilesInDir(path string) {
 		}
 
 		if file.IsDir() {
-			listFilesInDir(filepath.Join(path, file.Name()))
+			listFilesInDir(filepath.Join(path, file.Name()), rdb)
 		} else {
 			fmt.Println(filepath.Join(path, file.Name()), "  ", file.Name())
+
+			// err := rdb.Set(ctx, file.Name(), filepath.Join(path, file.Name()), 0).Err()
+			err = rdb.SAdd(ctx, file.Name(), filepath.Join(path, file.Name())).Err()
 			if err != nil {
 				panic(err)
 			}
 		}
 	}
-
 }
+
+
