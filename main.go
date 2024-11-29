@@ -26,9 +26,13 @@ func main() {
 		return
 	}
 
-	rdb.FlushAll(ctx)
-
-	listFilesInDir(args[1], rdb)
+	if args[1] == "--update" {
+		refresh(rdb, "/")
+	} else if args[1] == "--dev" {
+		refresh(rdb, args[2])
+	} else {
+		locateFile(rdb, args[1])
+	} 
 }
 
 func listFilesInDir(path string, rdb *redis.Client) {
@@ -42,16 +46,9 @@ func listFilesInDir(path string, rdb *redis.Client) {
 
 	for _, file := range files {
 
-		if file.Name() == ".git" {
-			continue
-		}
-
 		if file.IsDir() {
 			listFilesInDir(filepath.Join(path, file.Name()), rdb)
 		} else {
-			fmt.Println(filepath.Join(path, file.Name()), "  ", file.Name())
-
-			// err := rdb.Set(ctx, file.Name(), filepath.Join(path, file.Name()), 0).Err()
 			err = rdb.SAdd(ctx, file.Name(), filepath.Join(path, file.Name())).Err()
 			if err != nil {
 				panic(err)
@@ -60,4 +57,21 @@ func listFilesInDir(path string, rdb *redis.Client) {
 	}
 }
 
+func locateFile(rdb *redis.Client, filename string) {
+	paths, err := rdb.SMembers(ctx, filename).Result()
 
+	if err == redis.Nil {
+		fmt.Println("Key does not exist")
+	} else if err != nil {
+		panic(err)
+	} else {
+		for _, path := range paths {
+			fmt.Println(path)
+		}
+	}
+}
+
+func refresh(rdb *redis.Client, path string) {
+	rdb.FlushAll(ctx)
+	listFilesInDir(path, rdb)
+}

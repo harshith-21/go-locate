@@ -19,13 +19,29 @@ well its simple, breaking down it into tasks
 ### USAGE
 
 ```bash
-> go run main.go {file_path}
+# to update the db for particular path
+sudo go run main.go --dev testfolder 
 ```
 Example
 ```bash
-> go run main.go testfolder 
-testfolder/1.txt    1.txt
-testfolder/2.txt    2.txt
-testfolder/testfolder2/3.txt    3.txt
-testfolder/testfolder2/4.txt    4.txt
+> sudo go run main.go 4.txt
+testfolder/testfolder2/4.txt
 ```
+
+
+
+
+
+## TODO 
+
+well, after little performance test, this does not seem that fast, well atleast we will fix the downsides of the mlocate
+
+1. No Support for Metadata-Based Search
+
+	•	mlocate is limited to searching by file names and does not index file metadata such as file size, modification time, or ownership.
+	•	Problem: If your use case requires searching based on metadata (e.g., finding all files larger than a certain size or modified within the last day), mlocate will not provide that functionality.
+
+2. Lack of Granular Search Criteria
+
+	•	mlocate’s search criteria are limited to simple string matches of filenames.
+	•	Problem: More complex search needs, like case-insensitive matching, regular expressions, or other advanced search criteria, require additional processing with tools like grep or awk.
