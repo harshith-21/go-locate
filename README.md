@@ -29,7 +29,25 @@ testfolder/testfolder2/4.txt
 ```
 
 
+### UPDATE
+well, the perf ahem performance is bad, like bad bad as follow
+```bash
+root@ubuntu:~/go-locate# date && go run main.go --update && date
+Sat Nov 30 11:02:04 UTC 2024
+Error reading directory: open /proc/1743/task/4475: no such file or directory
+Error reading directory: open /proc/4460: no such file or directory
+Error reading directory: open /proc/4484: no such file or directory
+Error reading directory: open /proc/4513: no such file or directory
+Error reading directory: open /run/user/1000/doc: permission denied
+Error reading directory: open /run/user/1000/gvfs: permission denied
+Sat Nov 30 11:04:16 UTC 2024
 
+root@ubuntu:~/go-locate# date && updatedb && date
+Sat Nov 30 10:49:01 UTC 2024
+Sat Nov 30 10:49:01 UTC 2024
+```
+
+> well, lets duck functionality, lets get this on some steriods. with goroutines, channels and what not
 
 
 ## TODO 
