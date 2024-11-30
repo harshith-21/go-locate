@@ -28,8 +28,39 @@ Example
 testfolder/testfolder2/4.txt
 ```
 
+## TODO 
 
-### UPDATE
+well, after little performance test, this does not seem that fast, well atleast we will fix the downsides of the mlocate
+
+1. No Support for Metadata-Based Search
+
+	•	mlocate is limited to searching by file names and does not index file metadata such as file size, modification time, or ownership.
+	•	Problem: If your use case requires searching based on metadata (e.g., finding all files larger than a certain size or modified within the last day), mlocate will not provide that functionality.
+
+2. Lack of Granular Search Criteria
+
+	•	mlocate’s search criteria are limited to simple string matches of filenames.
+	•	Problem: More complex search needs, like case-insensitive matching, regular expressions, or other advanced search criteria, require additional processing with tools like grep or awk.
+
+
+### UPDATE 2
+well, after adding some go rountines and managing them with waitgroups, we get following
+```bash
+root@ubuntu:~/go-locate# date && go run main.go --update && date
+Sat Nov 30 12:00:29 UTC 2024
+Error reading directory: open /run/user/1000/doc: permission denied
+Error reading directory: open /run/user/1000/gvfs: permission denied
+Sat Nov 30 12:00:38 UTC 2024
+
+root@ubuntu:~/go-locate# date && updatedb && date
+Sat Nov 30 12:02:32 UTC 2024
+Sat Nov 30 12:02:33 UTC 2024
+```
+> Still not really close (maybe with more functionality we can make this worth it) and this is on plain UBUNTU22 os (with GUI, docker and golang V1.23 installed).
+but it an improvement from <b>120s<b> to <b>9s<b> 
+
+
+### UPDATE 1
 well, the perf ahem performance is bad, like bad bad as follow
 ```bash
 root@ubuntu:~/go-locate# date && go run main.go --update && date
@@ -49,17 +80,3 @@ Sat Nov 30 10:49:01 UTC 2024
 
 > well, lets duck functionality, lets get this on some steriods. with goroutines, channels and what not
 
-
-## TODO 
-
-well, after little performance test, this does not seem that fast, well atleast we will fix the downsides of the mlocate
-
-1. No Support for Metadata-Based Search
-
-	•	mlocate is limited to searching by file names and does not index file metadata such as file size, modification time, or ownership.
-	•	Problem: If your use case requires searching based on metadata (e.g., finding all files larger than a certain size or modified within the last day), mlocate will not provide that functionality.
-
-2. Lack of Granular Search Criteria
-
-	•	mlocate’s search criteria are limited to simple string matches of filenames.
-	•	Problem: More complex search needs, like case-insensitive matching, regular expressions, or other advanced search criteria, require additional processing with tools like grep or awk.
